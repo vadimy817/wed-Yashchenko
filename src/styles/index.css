@@ -275,6 +275,9 @@ h1, h2, h3 {
   box-shadow: var(--shadow);
   overflow: hidden;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
+  /* Картки поза екраном браузер не верстає і не малює, поки до них не доскролили */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 600px;
 }
 
 .tutor-card:hover {

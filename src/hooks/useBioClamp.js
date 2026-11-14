@@ -16,7 +16,7 @@ export function useBioClamp(containerRef, deps) {
       //    scrollHeight — повна висота тексту, clientHeight — видима (3 рядки).
       const results = [];
       bios.forEach((bio) => {
-        if (!isInViewport(bio.getBoundingClientRect())) return;
+        if (!isInViewport(bio.closest('.tutor-card').getBoundingClientRect())) return;
         results.push({ bio, hasMore: bio.scrollHeight > bio.clientHeight + 1 });
       });
 
