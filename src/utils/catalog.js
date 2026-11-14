@@ -34,5 +34,13 @@ export function applyFilters(list, filters) {
 
 export function getVisibleTutors(list, { query, filters, sortBy }) {
   const result = applyFilters(list, filters).filter((tutor) => matchesQuery(tutor, query));
-  return result.sort(comparators[sortBy] || comparators.recommended);
+
+  if (sortBy === 'recommended' || !comparators[sortBy]) {
+    // Рахуємо рейтинг кожного репетитора один раз, а не в кожному порівнянні сортування
+    const scores = new Map();
+    result.forEach((tutor) => scores.set(tutor.id, tutorScore(tutor)));
+    return result.sort((a, b) => scores.get(b.id) - scores.get(a.id));
+  }
+
+  return result.sort(comparators[sortBy]);
 }
