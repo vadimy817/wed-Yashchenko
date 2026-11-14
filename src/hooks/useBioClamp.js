@@ -10,12 +10,19 @@ export function useBioClamp(containerRef, deps) {
     if (!container) return undefined;
 
     const update = () => {
-      container.querySelectorAll('.tutor-card__bio').forEach((bio) => {
+      const bios = container.querySelectorAll('.tutor-card__bio');
+
+      // 1) Спочатку лише читаємо розміри. Клас is-clamped не знімаємо:
+      //    scrollHeight — повна висота тексту, clientHeight — видима (3 рядки).
+      const results = [];
+      bios.forEach((bio) => {
         if (!isInViewport(bio.getBoundingClientRect())) return;
-        bio.classList.remove('is-clamped');
-        const fullHeight = bio.offsetHeight;
-        bio.classList.add('is-clamped');
-        bio.closest('.tutor-card').classList.toggle('has-more', fullHeight > bio.offsetHeight + 1);
+        results.push({ bio, hasMore: bio.scrollHeight > bio.clientHeight + 1 });
+      });
+
+      // 2) Потім лише записуємо класи — без читань між ними, тож немає forced reflow
+      results.forEach(({ bio, hasMore }) => {
+        bio.closest('.tutor-card').classList.toggle('has-more', hasMore);
       });
     };
 
